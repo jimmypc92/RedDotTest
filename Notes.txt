@@ -1,0 +1,6 @@
+Windows seem to only allow cursors of size 32x32 pixels so if you want another size you have to work around it.
+To get a smaller size use createCustomCursor() with a 32x32 image where the unwanted pixels are transparent. If you use BufferedImage.TYPE_INT_ARGB you can make pixels transparent.
+To make a larger cursor I believe this will work:
+Create a custom cursor that is completely transparent.
+Use a mouseMotionListener to get the position of the cursor.
+Draw your cursor image at the position of the real (transparent) cursor.
