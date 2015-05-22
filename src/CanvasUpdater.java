@@ -3,9 +3,9 @@ import java.awt.Canvas;
 
 public class CanvasUpdater implements Runnable{
 
-    private Canvas canvas;
+    private TestCanvas canvas;
     
-    public CanvasUpdater(Canvas c) {
+    public CanvasUpdater(TestCanvas c) {
         canvas = c;
     }
 
@@ -13,7 +13,9 @@ public class CanvasUpdater implements Runnable{
     public void run() {
         while(true){
             try{
-                Thread.sleep(100);
+                Thread.sleep(17);
+                canvas.performTestLogic();
+                canvas.moveTheDot();
                 canvas.repaint();
             } catch(Exception e){
                 e.printStackTrace();

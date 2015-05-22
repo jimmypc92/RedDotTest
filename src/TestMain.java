@@ -1,14 +1,10 @@
 import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -18,24 +14,13 @@ public class TestMain {
     
     JFrame testFrame;
     TestCanvas testCanvas;
+    JLabel upTimeLabel;
+    
 
     public static void main(String args[]){
         
         TestMain testMain = new TestMain();
         testMain.createFrame();
-        
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        
-      //Load an image for the cursor  
-        Image image = toolkit.getImage("yellow_box.png");
-        
-      //Create the hotspot for the cursor  
-        Point hotSpot = new Point(0,0);
-        
-      //Create the custom cursor  
-        Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "Yellow_Box");
-        
-        testMain.testFrame.setCursor(cursor);
         
     }
     
@@ -101,6 +86,10 @@ public class TestMain {
             
         });
         optionsPanel.add(speedButton);
+        
+        upTimeLabel = new JLabel("0");
+        testCanvas.setDisplayLabel(upTimeLabel);
+        optionsPanel.add(upTimeLabel);
         
         
         return optionsPanel;
