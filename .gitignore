@@ -3,10 +3,6 @@
 *.ear
 *.class
 
-*.pydevproject
-.project
 .metadata
 bin/*
-.classpath
-.settings/
 .loadpath
