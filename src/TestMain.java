@@ -15,6 +15,8 @@ public class TestMain {
     JFrame testFrame;
     TestCanvas testCanvas;
     JLabel upTimeLabel;
+    TimeLabel timeLabel;
+    JLabel percentageLabel;
     
 
     public static void main(String args[]){
@@ -26,7 +28,7 @@ public class TestMain {
     
     private void createFrame(){
       //1. Create the frame.
-        testFrame = new JFrame("FrameDemo");
+        testFrame = new JFrame("Side To Side Test");
 
         //Create a Layout to hold the canvas and the options pane.
         BorderLayout bLayout = new BorderLayout();
@@ -90,6 +92,14 @@ public class TestMain {
         upTimeLabel = new JLabel("0");
         testCanvas.setDisplayLabel(upTimeLabel);
         optionsPanel.add(upTimeLabel);
+        
+        timeLabel = new TimeLabel(TimeLabel.INITIAL_STRING);
+        testCanvas.setTimeLabel(timeLabel);
+        optionsPanel.add(timeLabel);
+        
+        percentageLabel = new JLabel("0%");
+        testCanvas.setPercentageLabel(percentageLabel);
+        optionsPanel.add(percentageLabel);
         
         
         return optionsPanel;

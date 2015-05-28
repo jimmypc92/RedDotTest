@@ -25,12 +25,16 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     private final int RIGHT = 1;
     private int currDirection;
     private JLabel displayLabel;
+    private TimeLabel timeLabel;
+    private JLabel percentageLabel;
     private Point topLeftOfCursor;
     private int upTime;
+    private int downTime;
     private int continuousUpTime;
     private boolean isUpTimeContinuous;
     private int continuousThreshold;
     private int maximumContinuousThreshold;
+    private int necessaryUpTimeToChange;
     
     
     public TestCanvas() {
@@ -44,9 +48,11 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
         continuousUpTime = 0;
         isUpTimeContinuous = false;
         continuousThreshold = 100;
-        maximumContinuousThreshold = 500;
+        maximumContinuousThreshold = 300;
+        necessaryUpTimeToChange = continuousThreshold;
         
         upTime = 0;
+        downTime = 0;
         setupCursor();
         setupListener();
     }
@@ -95,7 +101,7 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     }
     
     private boolean isPointInBounds(int x){
-    	if(x > this.getWidth()){
+    	if(x > this.getWidth() - redDotRadius){
     		return false;
     	}
     	if(x<0){
@@ -115,10 +121,12 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     private boolean isCursorOverDot(){
     	topLeftOfCursor.x = cursorPos.x-(cursorWidth/2);
     	topLeftOfCursor.y = cursorPos.y-(cursorHeight/2);
-    	if(redPoint.y < topLeftOfCursor.y || redPoint.y > (topLeftOfCursor.y + cursorHeight)){
+    	int redPointCenterY = redPoint.y+redDotRadius/2;
+    	int redPointCenterX = redPoint.x+redDotRadius/2;
+    	if(redPointCenterY < topLeftOfCursor.y || redPointCenterY > (topLeftOfCursor.y + cursorHeight)){
     		return false;
     	}
-    	if(redPoint.x < topLeftOfCursor.x || redPoint.x > (topLeftOfCursor.x + cursorWidth)){
+    	if(redPointCenterX < topLeftOfCursor.x || redPointCenterX > (topLeftOfCursor.x + cursorWidth)){
     		return false;
     	}
     	return true;
@@ -142,11 +150,15 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     	if(isCursorOverDot()){
     		isUpTimeContinuous = true;
     		upTime++;
+    		if(upTime%60==0){
+    			this.timeLabel.incrementTimerAndDisplay();
+    		}
     		incrementContinuousUpTime();
     		incrementDisplayLabel();
     		if(isContinuousUpTimeOverThreshold() && isPointInBounds(redPoint.x)){
     			if(shouldDotChangeDirection()){
     				changeDirection();
+    				updateNecessaryUpTimeToChange();
         			continuousUpTime = 0;
     			}
     		}
@@ -154,25 +166,24 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     	else{
 	    	isUpTimeContinuous = false;
 	    	continuousUpTime = 0;
+	    	downTime++;
     	}
+    	updatePercentageLabel();
     }
     
     private boolean shouldDotChangeDirection() {
-    	if(continuousUpTime < continuousThreshold) {
-    		return false;
-    	}
-    	else if(continuousUpTime < maximumContinuousThreshold) {
-    		int setThreshDiff = (maximumContinuousThreshold - continuousThreshold);
-    		int curUpTimeDiff = (maximumContinuousThreshold - continuousUpTime);
-    		float probFactor = (float)(setThreshDiff - curUpTimeDiff) / (float)setThreshDiff;
-    		if(Math.random() < probFactor){
-    			return true;
-    		}
+    	if(continuousUpTime < necessaryUpTimeToChange) {
     		return false;
     	}
     	else {
     		return true;
     	}
+    }
+    
+    private void updateNecessaryUpTimeToChange(){
+		int setThreshDiff = (maximumContinuousThreshold - continuousThreshold);
+		necessaryUpTimeToChange = (int) ( ( setThreshDiff * Math.random() ) + continuousThreshold );
+		return;
     }
     
     private void incrementDisplayLabel(){
@@ -183,6 +194,21 @@ public class TestCanvas extends Canvas implements MouseMotionListener {
     
     public void setDisplayLabel(JLabel label){
     	this.displayLabel = label;
+    }
+    
+    public void setTimeLabel(TimeLabel label){
+    	this.timeLabel = label;    	
+    }
+    
+    public void setPercentageLabel(JLabel label){
+    	this.percentageLabel = label;    	
+    }
+    
+    public void updatePercentageLabel(){
+    	if(this.percentageLabel != null){
+    		float percentage = ((float)upTime)/(float)((upTime+downTime));
+    		percentageLabel.setText(String.format("Uptime Percentage: %.0f%%", 100*percentage)); 
+    	}
     }
 
 	@Override
